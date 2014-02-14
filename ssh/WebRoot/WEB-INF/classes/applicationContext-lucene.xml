@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	
+	<context:property-placeholder location="classpath:lucene.properties"/>
+	
+	<bean id="luceneServiceImpl" class="cn.itcast.lucene.LuceneServiceImpl">
+		<property name="highlighterUtil" ref="highlighterUtil" />
+		<property name="luceneUtil" ref="luceneUtil" />
+	</bean>
+	
+	<bean id="highlighterUtil" class="cn.itcast.lucene.HighlighterUtil" init-method="init">
+		<property name="configuraction" ref="configuraction" />
+		<property name="startTag" value="${startTag}" />
+		<property name="endTag" value="${endTag}" />
+	</bean>
+	
+	<!-- 
+		创建bean的方式有几种: 构造,静态工厂,普通工厂
+		如果注入的类型不标准可以才用init()方法来取代工厂
+	 -->
+	<bean id="luceneUtil" class="cn.itcast.lucene.LuceneUtil" destroy-method="destory" init-method="init">
+	 	<property name="configuraction" ref="configuraction" />
+	 </bean> 
+	<!-- 
+		先执行构造方法然后在执行init方法
+	 -->
+	<bean id="configuraction" class="cn.itcast.lucene.Configuraction" init-method="init">
+		<constructor-arg name="indexPath" value="${indexPath}" />
+	</bean>
+	
+</beans>
